@@ -8,10 +8,13 @@
 	        <span class="icon-bar"></span>
 	        <span class="icon-bar"></span>
 	      </button>
-	      <a class="navbar-brand" href="{{pathFor 'index'}}">Base</a>
+	      <a class="navbar-brand" href="{{pathFor 'documents'}}">Mark-Mo-Tron</a>
 	    </div>
 	    <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse">
 	    	{{#if currentUser}}
+				<ul class="nav navbar-nav">
+					<li class="{{currentRoute 'documents'}}"><a href="{{pathFor 'documents'}}">Documents</a></li>
+				</ul>
 	      <ul class="nav navbar-nav navbar-right">
 	        <li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{currentUser.emails.[0].address}} <span class="caret"></span></a>

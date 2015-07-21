@@ -4,19 +4,30 @@
 */
 
 Router.route('index', {
-  path: '/',
-  template: 'index',
+  path: '/'
+});
+
+Router.route( 'documents', {
+  path: '/documents',
+  template: 'documents',
   subscriptions: function(){
-    return Meteor.subscribe('examplePublication');
-    /* 
-    return [
-      Meteor.subscribe('examplePublication'),
-      Meteor.subscribe('examplePublication2')
-    ];
-    */
+    return Meteor.subscribe( 'documents' );
   },
   onBeforeAction: function(){
-    // Code to run before route goes here.
+    Session.set( "currentRoute", "documents" );
+    this.next();
+  }
+});
+
+Router.route( 'editor', {
+  name: "editor",
+  path: '/documents/:_id',
+  template: 'editor',
+  subscriptions: function(){
+    return Meteor.subscribe( 'document', this.params._id );
+  },
+  onBeforeAction: function(){
+    Session.set( "currentRoute", "editor" );
     this.next();
   }
 });

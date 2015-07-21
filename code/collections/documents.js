@@ -1,10 +1,10 @@
-Example = new Meteor.Collection('example');
+Documents = new Meteor.Collection( 'documents' );
 
 /*
 * Allow
 */
 
-Example.allow({
+Documents.allow({
   insert: function(){
     // Disallow inserts on the client by default.
     return false;
@@ -23,7 +23,7 @@ Example.allow({
 * Deny
 */
 
-Example.deny({
+Documents.deny({
   insert: function(){
     // Deny inserts on the client by default.
     return true;

@@ -1,0 +1,14 @@
+<template name="editor">
+  <header class="editor-header">
+    <label for="documentTitle">Title</label>
+    <input type="text" name="documentTitle" value="{{document.title}}">
+  </header>
+  <div class="editor-preview">
+    <div class="editor-wrap">
+      <textarea id="editor"></textarea>
+    </div>
+    <div class="preview-wrap">
+      <div id="preview"></div>
+    </div>
+  </div>
+</template>

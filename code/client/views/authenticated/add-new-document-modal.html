@@ -1,0 +1,22 @@
+<template name="addNewDocumentModal">
+  <div class="modal fade" id="new-document-modal" tabindex="-1" role="dialog" aria-labelledby="new-document-modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Start a New Document</h4>
+        </div>
+        <form id="new-document">
+          <div class="modal-body">
+            <label for="documentTitle">Document Title</label>
+            <input type="text" name="documentTitle" class="form-control" placeholder="e.g. Plans for World Domination">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success">Create Document</button>
+          </div>
+        </form> <!-- end #new-document -->
+      </div>
+    </div>
+  </div>
+</template>

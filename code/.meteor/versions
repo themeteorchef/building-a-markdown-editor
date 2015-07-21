@@ -51,6 +51,7 @@ npm-bcrypt@0.7.8_2
 npm-container@1.0.0
 observe-sequence@1.0.6
 ordered-dict@1.0.3
+perak:codemirror@1.2.3
 random@1.0.3
 reactive-dict@1.1.0
 reactive-var@1.0.5
@@ -66,6 +67,7 @@ srp@1.0.3
 standard-app-packages@1.0.5
 templating@1.1.1
 themeteorchef:bert@1.1.0
+themeteorchef:commonmark@1.0.0
 themeteorchef:jquery-validation@1.13.1
 tracker@1.0.7
 twbs:bootstrap@3.3.5

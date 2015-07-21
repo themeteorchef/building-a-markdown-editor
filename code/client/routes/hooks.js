@@ -29,8 +29,26 @@ checkUserLoggedIn = function(){
 
 userAuthenticated = function(){
   if( !Meteor.loggingIn() && Meteor.user() ){
-    Router.go('/');
+    Router.go('/documents');
   } else {
+    this.next();
+  }
+}
+
+/*
+* Hook: Set an "editor-view" class on the body.
+* If a user goes to the single document/editor view, add a body class called
+* .editor-view. If they're NOT on the document/editor view, remove the class.
+*/
+
+editorView = function(){
+  var currentRoute = Router.current().route._path;
+
+  if ( currentRoute === "/documents/:_id" ) {
+    $( "body" ).addClass( "editor-view" );
+    this.next();
+  } else {
+    $( "body" ).removeClass( "editor-view" );
     this.next();
   }
 }
@@ -50,9 +68,12 @@ Router.onBeforeAction(checkUserLoggedIn, {
 
 Router.onBeforeAction(userAuthenticated, {
   only: [
+    'index',
     'signup',
     'login',
     'recover-password',
     'reset-password'
   ]
 });
+
+Router.onBeforeAction( editorView );
