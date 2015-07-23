@@ -43,7 +43,6 @@ Template.editor.events({
   'keyup .CodeMirror': function( event, template ) {
     var text = template.editor.getValue();
 
-    // Embellish our "saving" event a little bit.
     template.saveState.set( true );
 
     // Here, we use the deanius:promise package to chain our calls. Why? Well,
