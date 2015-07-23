@@ -4,18 +4,20 @@
 */
 
 Meteor.methods({
-  exampleUpdateMethod: function(argument){
+  updateDocument: function( changes ){
     // Check the argument. Assuming an Object type here.
-    check(argument, Object);
+    check( changes, {
+      _id: String,
+      markdown: Match.Optional( String ),
+      title: Match.Optional( String )
+    });
 
     // Perform the update.
     try {
-      var exampleId = Example.update(argument._id, {
-        $set: {
-          "someKey": argument.someKey
-        }
+      var documentId = Documents.update( changes._id, {
+        $set: changes
       });
-      return exampleId;
+      return documentId;
     } catch(exception) {
       // If an error occurs, return it to the client.
       return exception;

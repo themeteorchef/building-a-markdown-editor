@@ -15,6 +15,7 @@ Router.route( 'documents', {
   },
   onBeforeAction: function(){
     Session.set( "currentRoute", "documents" );
+    Session.set( "currentDocument", null );
     this.next();
   }
 });
@@ -28,6 +29,7 @@ Router.route( 'editor', {
   },
   onBeforeAction: function(){
     Session.set( "currentRoute", "editor" );
+    Session.set( "currentDocument", this.params._id );
     this.next();
   }
 });

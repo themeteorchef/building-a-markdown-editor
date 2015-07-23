@@ -2,6 +2,11 @@
   <header class="editor-header">
     <label for="documentTitle">Title</label>
     <input type="text" name="documentTitle" value="{{document.title}}">
+    {{#if saving}}
+      <span class="save-state"><i class="fa fa-frefresh fa-spin"></i> Saving...</span>
+    {{else}}
+      <span class="save-state text-success"><i class="fa fa-check"></i> Saved!</span>
+    {{/if}}
   </header>
   <div class="editor-preview">
     <div class="editor-wrap">

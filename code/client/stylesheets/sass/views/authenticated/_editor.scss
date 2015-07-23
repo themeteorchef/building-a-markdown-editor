@@ -1,3 +1,7 @@
+.editor-view {
+  overflow: hidden;
+}
+
 .editor-view .container {
   width: 100%;
   padding: 0px;
@@ -5,7 +9,7 @@
 
 .editor-view .navbar {
   margin-bottom: 0px;
-  padding: 0 15px;
+  padding: 0 0 0 15px;
 }
 
 .editor-header {
@@ -31,15 +35,27 @@
   input:focus {
     outline: 0;
   }
+
+  .save-state {
+    position: absolute;
+    top: 27px;
+    right: 20px;
+    z-index: 2;
+  }
+}
+
+.editor-wrap,
+.preview-wrap {
+  position: absolute;
+  top: 128px;
+  bottom: 0px;
+  width: 50%;
+  height: calc( 100% - 128px );
 }
 
 .editor-wrap {
-  position: absolute;
-  top: 127px;
   left: 0px;
-  bottom: 0px;
-  width: 50%;
-  height: calc( 100% - 127px );
+  border-right: 1px solid #eee;
 }
 
 .editor-wrap .CodeMirror {
@@ -52,6 +68,34 @@
   .CodeMirror-sizer {
     padding: 15px;
     font-size: 14px;
-    line-height: 24px;
+    line-height: 20px;
   }
+}
+
+#editor {
+  visibility: hidden;
+}
+
+.preview-wrap {
+  overflow: auto;
+  right: 0px;
+  background: #fff;
+  padding: 20px;
+}
+
+#preview > *:first-child {
+  margin-top: 0px;
+}
+
+#preview > *:last-child {
+  margin-bottom: 0px;
+}
+
+#preview {
+  img {
+    display: block;
+    height: auto;
+    max-width: 100%;
+  }
+
 }

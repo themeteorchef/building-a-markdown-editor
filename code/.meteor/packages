@@ -13,7 +13,6 @@ audit-argument-checks
 iron:router
 themeteorchef:jquery-validation
 twbs:bootstrap
-browser-policy
 meteorhacks:npm
 
 
@@ -23,3 +22,5 @@ meteorhacks:ssr
 fourseven:scss
 perak:codemirror
 themeteorchef:commonmark
+reactive-var
+deanius:promise

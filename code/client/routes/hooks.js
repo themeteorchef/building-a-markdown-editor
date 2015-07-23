@@ -41,9 +41,8 @@ userAuthenticated = function(){
 * .editor-view. If they're NOT on the document/editor view, remove the class.
 */
 
-editorView = function(){
+var editorView = function(){
   var currentRoute = Router.current().route._path;
-
   if ( currentRoute === "/documents/:_id" ) {
     $( "body" ).addClass( "editor-view" );
     this.next();
@@ -51,7 +50,7 @@ editorView = function(){
     $( "body" ).removeClass( "editor-view" );
     this.next();
   }
-}
+};
 
 /*
 * Run Hooks
