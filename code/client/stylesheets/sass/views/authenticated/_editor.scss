@@ -56,19 +56,19 @@
 .editor-wrap {
   left: 0px;
   border-right: 1px solid #eee;
-}
 
-.editor-wrap .CodeMirror {
-  height: 100%;
+  .CodeMirror {
+    height: 100%;
 
-  .CodeMirror-gutters {
-    border-right: none;
-  }
+    .CodeMirror-gutters {
+      border-right: none;
+    }
 
-  .CodeMirror-sizer {
-    padding: 15px;
-    font-size: 14px;
-    line-height: 20px;
+    .CodeMirror-sizer {
+      padding: 15px;
+      font-size: 14px;
+      line-height: 20px;
+    }
   }
 }
 
@@ -83,19 +83,22 @@
   padding: 20px;
 }
 
-#preview > *:first-child {
-  margin-top: 0px;
-}
-
 #preview > *:last-child {
   margin-bottom: 0px;
 }
 
 #preview {
+  > *:first-child {
+    margin-top: 0px;
+  }
+
+  > *:last-child {
+    margin-bottom: 0px;
+  }
+
   img {
     display: block;
     height: auto;
     max-width: 100%;
   }
-
 }
