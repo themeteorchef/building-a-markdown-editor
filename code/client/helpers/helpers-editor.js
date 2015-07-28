@@ -9,12 +9,7 @@ initEditor = function( template ) {
   Tracker.autorun( function( computation ) {
     var doc = Documents.findOne( {}, { fields: { "markdown": 1 } } );
 
-    // We make sure to test based on length of our Markdown string and not just
-    // the existence of it. The reason for this is that this statement will
-    // evaluate to false if the string is empty (it would be by default). This
-    // allows us to avoid a weird loop where our computation.stop() doesn't fire
-    // correctly, because it's inside of this evaluation.
-    if ( doc && doc.markdown.length > -1 ) {
+    if ( doc && doc.markdown ) {
 
       Meteor.call( "convertMarkdown", doc.markdown, function( error, html ) {
         if ( error ) {
@@ -24,7 +19,10 @@ initEditor = function( template ) {
         }
       });
 
-      template.editor.setValue( doc.markdown );
+      // Note: here, we account for the potential "blank space" value on default
+      // by using the trim() method on our string. This way when we load up for
+      // the first time, our editor doesn't just have a blank space. Sneaky!
+      template.editor.setValue( doc.markdown.trim() );
 
       computation.stop();
     }

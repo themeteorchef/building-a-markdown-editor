@@ -45,27 +45,33 @@ Template.editor.events({
 
     template.saveState.set( true );
 
-    // Here, we use the deanius:promise package to chain our calls. Why? Well,
-    // we need to call two methods here: one to convert our markdown to HTML on
-    // the server and get it back so we can update our preview, and then another
-    // to actually save our Markdown to the database. This package, using JavaScript
-    // promises, allows us to chain our method calls so our code is a little cleaner
-    // and we don't have to get caught up in "callback hell."
+    // For good measure, make sure we're not inserting a blank string. This saves
+    // us some unnecessary work but also prevents running into an "undefined" error
+    // if we save the blank string to the database.
+    if ( text !== "" ) {
 
-    Meteor.promise( "convertMarkdown", text )
-      .then( function( html ) {
-        $( "#preview" ).html( html );
-        return Meteor.promise( "updateDocument", { _id: template.docId, markdown: text } );
-      })
-      .then( function() {
-        delay( function() {
-          // After a short delay, set our "saving" state to "Saved!"
-          template.saveState.set( false );
-        }, 1000 );
-      })
-      .catch( function( error ) {
-        Bert.alert( error.reason, "danger" );
-      });
+      // Here, we use the deanius:promise package to chain our calls. Why? Well,
+      // we need to call two methods here: one to convert our markdown to HTML on
+      // the server and get it back so we can update our preview, and then another
+      // to actually save our Markdown to the database. This package, using JavaScript
+      // promises, allows us to chain our method calls so our code is a little cleaner
+      // and we don't have to get caught up in "callback hell."
+
+      Meteor.promise( "convertMarkdown", text )
+        .then( function( html ) {
+          $( "#preview" ).html( html );
+          return Meteor.promise( "updateDocument", { _id: template.docId, markdown: text } );
+        })
+        .then( function() {
+          delay( function() {
+            // After a short delay, set our "saving" state to "Saved!"
+            template.saveState.set( false );
+          }, 1000 );
+        })
+        .catch( function( error ) {
+          Bert.alert( error.reason, "danger" );
+        });
+    }
   },
   'blur [name="documentTitle"]': function( event, template ) {
     var title = $( event.target ).val();

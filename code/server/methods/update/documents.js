@@ -12,9 +12,12 @@ Meteor.methods({
       title: Match.Optional( String )
     });
 
+    var doc = changes._id;
+    delete changes._id;
+
     // Perform the update.
     try {
-      var documentId = Documents.update( changes._id, {
+      var documentId = Documents.update( doc, {
         $set: changes
       });
       return documentId;
