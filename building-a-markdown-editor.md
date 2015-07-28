@@ -5,7 +5,7 @@
 ```bash
 meteor add perak:codemirror
 ```
-To give us a fancy text editor with syntax highlighting, we'll make use of the [CodeMirror]() library which we can get access to from the [`perak:codemirror`](https://atmospherejs.com/perak/codemirror) package.
+To give us a fancy text editor with syntax highlighting, we'll make use of the [CodeMirror](http://codemirror.net) library which we can get access to from the [`perak:codemirror`](https://atmospherejs.com/perak/codemirror) package.
 
 
 <p class="block-header">Terminal</p>
@@ -13,7 +13,7 @@ To give us a fancy text editor with syntax highlighting, we'll make use of the [
 ```bash
 meteor add themeteorchef:commonmark
 ```
-We'll be using the [commonmark.js](https://github.com/jgm/commonmark.js) library to parse Markdown on the server. To get access to this (and a helper function for parsing Markdown), we'll install `themeteorchef:commonmark`.
+We'll be using the [commonmark.js](https://github.com/jgm/commonmark.js) library to parse Markdown on the server. To get access to this (and a helper function for parsing Markdown), we'll install [`themeteorchef:commonmark`](http://atmospherejs.com/themeteorchef/commonmark).
 
 <p class="block-header">Terminal</p>
 
@@ -104,7 +104,7 @@ Let's hop over to the code for our `addNewDocumentsModal` template to wrap our h
 </template>
 ```
 
-Here, we're using a [Bootstrap modal]() to present a form for creating a new document. We're keeping things pretty spartan here and asking for just a title. There's a lot of markup here, but the part we'll focus on is the input field `<input type="text" name="documentTitle" class="form-control" placeholder="e.g. Plans for World Domination">`. [Document placeholder title](https://www.youtube.com/watch?v=oiOKh3odS4U) optional.
+Here, we're using a [Bootstrap modal](http://getbootstrap.com/javascript/#modals) to present a form for creating a new document. We're keeping things pretty spartan here and asking for just a title. There's a lot of markup here, but the part we'll focus on is the input field `<input type="text" name="documentTitle" class="form-control" placeholder="e.g. Plans for World Domination">`. [Document placeholder title](https://www.youtube.com/watch?v=oiOKh3odS4U) optional.
 
 ![Pinky and the Brain](http://media.giphy.com/media/3mKBXLpYeLzUY/giphy.gif)
 
@@ -130,7 +130,7 @@ One thing to point out is that because this is a modal, we expect it to _overlay
 </template>
 ```
 
-See it up there at the top `{{> addNewDocumentModal }}`? By the magic of Bootstrap, all we need to do is make sure the _markup_ for our modal is on screen by including our template. It handles the hiding/showing for us. Let's look at the logic for our modal so we can get an idea of how this is wired up.
+See it up there at the top `{{> addNewDocumentModal }}`? By the magic of Bootstrap, all we need to do is make sure the _markup_ for our modal is on screen by including our template and set the `data-toggle="modal" data-target="#new-document-modal"` attributes on our "Start a New Document" button. After that, Bootstrap handles the hiding/showing for us. Let's look at the logic for our modal so we can get an idea of how this is wired up.
 
 <p class="block-header">/clients/controllers/authenticated/add-new-document-modal.js</p>
 
@@ -184,7 +184,8 @@ Meteor.methods({
     var doc = {
       title: title,
       owner: Meteor.userId(),
-      markdown: ""
+      // Note: here we have a blank space to account for our editor's loading state.
+      markdown: " "
     };
 
     try {
@@ -198,7 +199,7 @@ Meteor.methods({
 ```
 Pretty...underwhelming, eh? Nonetheless, very important. First, we check our `title` argument to make sure that it's a string. Next, we do something a little fancy. Instead of just inserting the document with a title only, we construct a `doc` object that we can insert. Notice, here, that we set the `title` key equal to the title we received from the client and then set two new fields: `owner` and `markdown`. 
 
-That first one, `owner`, allows us to attach this document to the _currently logged in user_. What's nice about this is that notice we can get the user's ID on the server using `Meteor.userId()`. This helps us avoid passing the ID over from the client. We also add an empty `markdown` key with an empty value. As you might have guessed, we'll set this later on when we get fancy with our markdown in a little bit. For now, we include it so that it's defined on our object.
+That first one, `owner`, allows us to attach this document to the _currently logged in user_. What's nice about this is that notice we can get the user's ID on the server using `Meteor.userId()`. This helps us avoid passing the ID over from the client. We also add an empty `markdown` key with a value of a blank space. Why? This has to do with empty strings being identified as `undefined`. Later on, we'll need to set our editor's value when the page loads. Having this value as a blank space makes it a little easier for us to do this (don't worry, we'll explain later).
 
 Lastly, we wire up our insert in a `try/catch` block. This allows us to call our insert method without a callback. Why would we do that? Well, when we do this, Meteor simply returns the new document's ID. That means we can assign that value to a variable and return it. We use a `try/catch` because if that insert were to fail for some reason, that error would be deferred to the `catch` function and returned to the client. Simple. Let's see what happens back over on the client once we have our ID. Hint: tons of fun.
 
@@ -349,7 +350,7 @@ Template.editor.onRendered( function() {
   });
 });
 ```
-Wasn't kidding, was I? To initialize code mirror in our `editor` template, this all of the code we need. Let's talk through it, though, as we're using an interesting technique.
+Wasn't kidding, was I? To initialize CodeMirror in our `editor` template, this is all of the code we need. Let's talk through it, though, as we're using an interesting technique.
 
 Remember back in our `editor` template? Let's pull that back up again and look at how we've defined the space where we want our CodeMirror editor to go.
 
@@ -369,7 +370,7 @@ Remember back in our `editor` template? Let's pull that back up again and look a
 
 We want to pay attention to the `<textarea id="editor"></textarea>` part. In order to load our editor, we're going to make use of CodeMirror's `fromTextArea` method. Why? Because this gives us more control over placement. Because we've got some interesting CSS going on to position everything, it makes more sense to put the element where we want it. This way we can pass the selector `#editor` to CodeMirror and let it swap in the actual editor. Cool!
 
-Back in our `onRendered` function, there's two things to note: how we're selecting our `<textarea>` and how we're passing configuration to CodeMirror. First, we're passing `this.find( "#editor" )` in our first argument. Because we're inside of an `onRendered` callback, `this` is equal to the current template instance. This is similar to saying `template.find( '#editor' )` in one of your event handlers.
+Back in our `onRendered` function, there are two things to note: how we're selecting our `<textarea>` and how we're passing configuration to CodeMirror. First, we're passing `this.find( "#editor" )` in as our first argument. Because we're inside of an `onRendered` callback, `this` is equal to the current template instance. This is similar to saying `template.find( '#editor' )` in one of your event handlers.
 
 Next, we pass an object with some configuration. The good news: 99% of this isn't required and is only offered as personal preference. The one setting you _do_ want to pay attention to, though, is the `mode`. Here, we've set this to `"markdown"` so CodeMirror knows to expect Markdown and apply the correct syntax highlighting. 
 
@@ -389,14 +390,16 @@ Template.editor.events({
   'keyup .CodeMirror': function( event, template ) {
     var text = template.editor.getValue();
 
-    Meteor.promise( "convertMarkdown", text )
-      .then( function( html ) {
-        $( "#preview" ).html( html );
-        return Meteor.promise( "updateDocument", { _id: template.docId, markdown: text } );
-      })
-      .catch( function( error ) {
-        Bert.alert( error.reason, "danger" );
-      });
+    if ( text !== "" ) {
+      Meteor.promise( "convertMarkdown", text )
+        .then( function( html ) {
+          $( "#preview" ).html( html );
+          return Meteor.promise( "updateDocument", { _id: template.docId, markdown: text } );
+        })
+        .catch( function( error ) {
+          Bert.alert( error.reason, "danger" );
+        });
+    }
   }
 });
 ```
@@ -404,7 +407,7 @@ Woah! Lots of stuff, but it's all pretty harmless. What we're doing here is watc
 
 First, we want to grab the current value of our CodeMirror instance. To do this, we can call `template.editor.getValue();` (we get `getValue()` as a helper method from CodeMirror). Notice, here, we're grabbing our _template_ instance and accessing our CodeMirror editor from it. This is possible because when we defined our CodeMirror earlier, we bound it to `this.editor` in our `editor` template's `onRendered` callback. 
 
-After we have our value, we need to three things:
+After we have our value, we need to three things (if our editor has a value/isn't empty):
 
 1. Convert that value from Markdown to HTML on the server.
 2. Take the HTML and "set" it in our preview area.
@@ -461,8 +464,11 @@ Meteor.methods({
       title: Match.Optional( String )
     });
 
+    var doc = changes._id;
+    delete changes._id;
+
     try {
-      var documentId = Documents.update( changes._id, {
+      var documentId = Documents.update( doc, {
         $set: changes
       });
       return documentId;
@@ -475,9 +481,9 @@ Meteor.methods({
 
 Very similar to our `insertDocument` method from earlier. We need to call attention to our `check()` method. Here, we're being a little bit crafty and making our method super flexible. Notice how we're pulling in our `changes` argument and comparing it to an object? Normally, this would mean that every time we call an update, we'd need all of the keys in that object to be present. Aha! Instead of doing that, we can make use of the `Match.Optional()` method. This tells our `check()` that these fields are optional, but if they _are_ included, they should be a `String` type. Ok, what's the point?
 
-This affords us the ability to reuse this method in multiple spots. Really in our app we only have two: our Markdown editor and our title (we've skipped over this but our editor and our title fields use this method to update the document). Instead of two separate methods, this technique lets us keep everything light. Great! Notice, too, that instead of having to pluck specific fields to pass to our `Documents.update()` method's `$set` value, we can simply pass our entire `changes` argument because we know it's only ever going to contain the fields we need to update. Nerd points x1000. 
+This affords us the ability to reuse this method in multiple spots. Really in our app we only have two: our Markdown editor and our title (we've skipped over this but our editor and our title fields use this method to update the document). Instead of two separate methods, this technique lets us keep everything light. Great! Notice, too, that instead of having to pluck specific fields to pass to our `Documents.update()` method's `$set` value, we can simply pass our entire `changes` argument because we know it's only ever going to contain the fields we need to update (except for the `_id` field, we go ahead and snip that off first). Nerd points x1000. 
 
-Once this in place, we can hop back to the client. Hint: get your party hat ready.
+Once this is in place, we can hop back to the client. Hint: get your party hat ready.
 
 <p class="block-header">/client/controllers/authenticated/editor.js</p>
 
@@ -486,14 +492,16 @@ Template.editor.events({
   'keyup .CodeMirror': function( event, template ) {
     var text = template.editor.getValue();
 
-    Meteor.promise( "convertMarkdown", text )
-      .then( function( html ) {
-        $( "#preview" ).html( html );
-        return Meteor.promise( "updateDocument", { _id: template.docId, markdown: text } );
-      })
-      .catch( function( error ) {
-        Bert.alert( error.reason, "danger" );
-      });
+    if ( text !== "" ) {
+      Meteor.promise( "convertMarkdown", text )
+        .then( function( html ) {
+          $( "#preview" ).html( html );
+          return Meteor.promise( "updateDocument", { _id: template.docId, markdown: text } );
+        })
+        .catch( function( error ) {
+          Bert.alert( error.reason, "danger" );
+        });
+    }
   }
 });
 ```
@@ -506,9 +514,9 @@ Oh no!
 
 You may be wondering why we don't just set the value of our editor and our preview with template helpers. Fair question! 
 
-On the editor side, we don't want to do this because it would be like sitting in a chair and having someone constantly pull it out from under us. Think about it. If the value of our editor is equal to whatever is in the database, when the database updates (on every `keyup` event), we're resetting the contents of the editor. The problem with this arises around cursor position. We find that a few edits are fine, but so many cause the cursor to jump to the end of the editor or even the start. Weird! 
+On the editor side, we don't want to do this because it would be like sitting in a chair and having someone constantly pulling it out from under us. Think about it. If the value of our editor is equal to whatever is in the database, when the database updates (on every `keyup` event), we're resetting the contents of the editor. The problem with this arises around cursor position. We find that a few edits are fine, but so many cause the cursor to jump to the end of the editor or even the start. Weird! 
 
-On the preview side, this is more of a "less is more" type of setup. Again, because we're updating our database on each `keyup` event, it could get pretty gnarly if we were also _reading_ that on each keyup event. It's not the end of the world, but it's also not necessary to constantly poll the database because we know our preview is based on whatever is in our editor (which synced with the database). Make sense?
+On the preview side, this is more of a "less is more" type of setup. Again, because we're updating our database on each `keyup` event, it could get pretty gnarly if we were also _reading_ that on each keyup event. It's not the end of the world, but it's also not necessary to constantly poll the database because we know our preview is based on whatever is in our editor (which is synced with the database). Make sense?
 
 To help us solve this, we've created a little helper function called `initEditor()` that we can call in our `editor` template's `onRendered` callback:
 
@@ -530,7 +538,7 @@ initEditor = function( template ) {
   Tracker.autorun( function( computation ) {
     var doc = Documents.findOne( {}, { fields: { "markdown": 1 } } );
 
-    if ( doc && doc.markdown.length > -1 ) {
+    if ( doc && doc.markdown ) {
 
       Meteor.call( "convertMarkdown", doc.markdown, function( error, html ) {
         if ( error ) {
@@ -540,7 +548,7 @@ initEditor = function( template ) {
         }
       });
 
-      template.editor.setValue( doc.markdown );
+      template.editor.setValue( doc.markdown.trim() );
 
       computation.stop();
     }
@@ -552,16 +560,25 @@ Nothing _too_ crazy. First, our function opens with a `Tracker.autorun()` call. 
 
 Inside, we do a `Documents.findOne()` to locate the current document. Because we're only publishing a single document equal to the current document ID in the URL, we can get away with this. Notice, too, that we set up a projection to only give us the `markdown` field. 
 
-This is where our autorun becomes handy. With our query set up, now we need to wait until we're sure we have a value. We make sure by saying if `doc` and `doc.markdown.length > -1`: go nuts. Why the `> -1`.  This requires a quick explanation of the `computation.stop();` call at the end of our if statement. This is responsible for _stopping_ our autorun once we have data (remember, we don't want this to run forever because we'll get the cursor jump problem we'd get with a helper). We say `> -1` in our if statement because this ensures our code runs even if our `markdown` string is empty. 
+This is where our autorun becomes handy. With our query set up, now we need to wait until we're sure we have a value. We make sure by saying if `doc` and `doc.markdown`: go nuts.
 
-If we just did `if ( doc && doc.markdown )` and our string was empty, the tracker computation would _rerun_ until it saw some data. What's the punchline? It's subtle and I almost missed it. But without this, if we started typing in an empty editor, our cursor would actually jump back to the start because until we looped back to the `computation.stop()`, we'd be live updating our editor. Crazy, eh? This check prevents that. `</tunnel>`. 
+Once we've confirmed we have some sort of Markdown string, we call to our `convertMarkdown` method to convert to HTML and on success we set our preview's HTML equal to the freshly converted Markdown. Note, too, just before we stop our computation that we set the value of our editor equal to the raw Markdown. Why the `trim()`?
 
-Okay! Once we've confirmed we have some sort of Markdown string, we call to our `convertMarkdown` method to convert to HTML and on success we set our preview's HTML equal to the freshly converted Markdown. Note, too, just before we stop our computation that we set the value of our editor equal to the raw Markdown. Phew!
+Remember earlier when we inserted our document and set the markdown field's initial value to `" "`? This is where it comes into play. If when we first created a document and _didn't_ have this, our editor would be set with a blank space, meaning our documents would always start with a gap. No good! This simply "trims" off any blank space at the end of a string, or, our single blank space.  
+
+<div class="note">
+  <h3>Undefined With Strings</h3>
+  <p>This caught me off guard. Unfortunately, if a string is simply empty, or, "", JavaScript will evaluate it to a falsy value. Because we need to check for its existence on the client, we get around this by setting the default value to a blank space to "trick" our if statement into running properly. Funky, I know.</p>
+</div>
+
+Ultimately this little trick saves us some headaches with the editor's cursor jumping around when we first start editing and getting some weird `Tracker` errors saying our `markdown` field is undefined. So it goes.
+
+One last thing to point out: `computation.stop()`. Notice that we get our `computation` value as an argument in our `Tracker.autorun()`'s callback function. Recall that we only want this to run until we have a value. After it's set, we don't want this code running again so we use the `.stop()` method to completely cancel out our computation. Now, even if changes are made to our document in the DB, nothing will happen.
 
 If we refresh now (or move between pages), we'll see that our editor _and_ preview populate as expected on page load. High five!
 
 ### Saving state
-Technically we're done. But we're never done. One little touch that we can add to this is a saving state. If you've ever used Google docs, you may have noticed that they show a little `Saving...` state if your typing and `Saved` if you've stopped. This is a nice touch to have because technically our user doesn't know if their work is being saved without it. Let's put our UX cap and get this added in.
+Technically we're done. But we're never done. One little touch that we can add to this is a saving state. If you've ever used Google docs, you may have noticed that they show a little `Saving...` state if you're typing and `Saved` if you've stopped. This is a nice touch to have because technically our user doesn't know if their work is being saved without it. Let's put our UX cap and get this added in.
 
 <p class="block-header">/client/views/authenticated/editor.html</p>
 
@@ -615,27 +632,29 @@ Template.editor.events({
 
     template.saveState.set( true );
 
-    Meteor.promise( "convertMarkdown", text )
-      .then( function( html ) {
-        $( "#preview" ).html( html );
-        return Meteor.promise( "updateDocument", { _id: template.docId, markdown: text } );
-      })
-      .then( function() {
-        delay( function() {
-          template.saveState.set( false );
-        }, 1000 );
-      })
-      .catch( function( error ) {
-        Bert.alert( error.reason, "danger" );
-      });
+    if ( text !== "" ) {
+      Meteor.promise( "convertMarkdown", text )
+        .then( function( html ) {
+          $( "#preview" ).html( html );
+          return Meteor.promise( "updateDocument", { _id: template.docId, markdown: text } );
+        })
+        .then( function() {
+          delay( function() {
+            template.saveState.set( false );
+          }, 1000 );
+        })
+        .catch( function( error ) {
+          Bert.alert( error.reason, "danger" );
+        });
+    }
   },
 });
 ```
 
-Back in our `keyup` event, we can see that we've added aline just above our Promise chain `template.saveState.set( true );`. This just toggles the state of our variable so that in our template, instead of `Saved!` it reads `Saving...`. Notice, this is happening while we're _typing_. So if we're typing, we see `Saving...` and after our database write has completed we see `Saved!`. The latter part of that—switching back to `Saved!`—is handled through an addition step in our Promise chain. Notice we add an addition `then()` call with a function that sets our `saveState` back to false. 
+Back in our `keyup` event, we can see that we've added a line just above our Promise chain `template.saveState.set( true );`. This just toggles the state of our variable so that in our template, instead of `Saved!` it reads `Saving...`. Notice, this is happening while we're _typing_. So if we're typing, we see `Saving...` and after our database write has completed we see `Saved!`. The latter part of that—switching back to `Saved!`—is handled through an additional step in our Promise chain. Notice we add an additional `then()` call with a function that sets our `saveState` back to false. 
 
-That `delay` function may look a little funky. What is that? We've added that here to compensate for [how JavaScript's timing functions work](http://ejohn.org/blog/how-javascript-timers-work/). We need a way to   consistently set and cancel our event because we'll be calling this repeatedly while typing. This delay function helps us prevent our `setTimeout` loops from tripping over one another, toggling the save state in unpredictable ways. The school bell is about to ring, though, so consider reviewing that [extra credit](https://github.com/themeteorchef/building-a-markdown-editor/blob/master/code/client/helpers/helpers-functions.js).
+That `delay` function may look a little funky. What is that? We've added that here to compensate for [how JavaScript's timing functions work](http://ejohn.org/blog/how-javascript-timers-work/). We need a way to   consistently set and cancel our event because we'll be calling this repeatedly while typing. This delay function helps us prevent our `setTimeout` loops from tripping over one another, toggling the save state in unpredictable ways. The school bell is about to ring, though, so consider reviewing that as [extra credit](https://github.com/themeteorchef/building-a-markdown-editor/blob/master/code/client/helpers/helpers-functions.js).
 
 ### Wrap Up & Summary
 
-Ring! Ring! Ring! That's all folks. In this recipe we learned how to build a Markdown editor complete with live preview and saving. We learned about using a Markdown parser, adding a CodeMirror editor to our app, and even learned how to use `ReactiveVar`. We also looked at using keyboard events to control when and how we perform certain functions, as well as how to use `Tracker.autorun` to get a wrangle on reactivity.
+Ring! Ring! Ring! That's all folks. In this recipe we learned how to build a Markdown editor complete with live preview and saving to the database. We learned about using a Markdown parser, adding a CodeMirror editor to our app, and even learned how to use `ReactiveVar`. We also looked at using keyboard events to control when and how we perform certain functions, as well as how to use `Tracker.autorun` to get a wrangle on reactivity.
