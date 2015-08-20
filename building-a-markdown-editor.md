@@ -1,7 +1,5 @@
 ### Getting Started
 
-Testing GitHub.
-
 <p class="block-header">Terminal</p>
 
 ```bash
