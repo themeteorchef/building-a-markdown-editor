@@ -1,5 +1,7 @@
 ### Getting Started
 
+Testing GitHub.
+
 <p class="block-header">Terminal</p>
 
 ```bash
@@ -407,7 +409,7 @@ Woah! Lots of stuff, but it's all pretty harmless. What we're doing here is watc
 
 First, we want to grab the current value of our CodeMirror instance. To do this, we can call `template.editor.getValue();` (we get `getValue()` as a helper method from CodeMirror). Notice, here, we're grabbing our _template_ instance and accessing our CodeMirror editor from it. This is possible because when we defined our CodeMirror earlier, we bound it to `this.editor` in our `editor` template's `onRendered` callback. 
 
-After we have our value, we need to three things (if our editor has a value/isn't empty):
+After we have our value, we need to do three things (if our editor has a value/isn't empty):
 
 1. Convert that value from Markdown to HTML on the server.
 2. Take the HTML and "set" it in our preview area.
