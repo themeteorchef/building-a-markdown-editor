@@ -5,15 +5,14 @@
 ```bash
 meteor add perak:codemirror
 ```
-To give us a fancy text editor with syntax highlighting, we'll make use of the [CodeMirror](http://codemirror.net) library which we can get access to from the [`perak:codemirror`](https://atmospherejs.com/perak/codemirror) package.
-
+To give us a fancy text editor with syntax highlighting, we'll make use of the [CodeMirror](https://codemirror.net) library which we can get access to from the [`perak:codemirror`](https://atmospherejs.com/perak/codemirror) package.
 
 <p class="block-header">Terminal</p>
 
 ```bash
 meteor add themeteorchef:commonmark
 ```
-We'll be using the [commonmark.js](https://github.com/jgm/commonmark.js) library to parse Markdown on the server. To get access to this (and a helper function for parsing Markdown), we'll install [`themeteorchef:commonmark`](http://atmospherejs.com/themeteorchef/commonmark).
+We'll be using the [commonmark.js](https://github.com/jgm/commonmark.js) library to parse Markdown on the server. To get access to this (and a helper function for parsing Markdown), we'll install [`themeteorchef:commonmark`](https://atmospherejs.com/themeteorchef/commonmark).
 
 <p class="block-header">Terminal</p>
 
@@ -104,9 +103,9 @@ Let's hop over to the code for our `addNewDocumentsModal` template to wrap our h
 </template>
 ```
 
-Here, we're using a [Bootstrap modal](http://getbootstrap.com/javascript/#modals) to present a form for creating a new document. We're keeping things pretty spartan here and asking for just a title. There's a lot of markup here, but the part we'll focus on is the input field `<input type="text" name="documentTitle" class="form-control" placeholder="e.g. Plans for World Domination">`. [Document placeholder title](https://www.youtube.com/watch?v=oiOKh3odS4U) optional.
+Here, we're using a [Bootstrap modal](https://getbootstrap.com/javascript/#modals) to present a form for creating a new document. We're keeping things pretty spartan here and asking for just a title. There's a lot of markup here, but the part we'll focus on is the input field `<input type="text" name="documentTitle" class="form-control" placeholder="e.g. Plans for World Domination">`. [Document placeholder title](https://www.youtube.com/watch?v=oiOKh3odS4U) optional.
 
-![Pinky and the Brain](http://media.giphy.com/media/3mKBXLpYeLzUY/giphy.gif)
+![Pinky and the Brain](https://media.giphy.com/media/3mKBXLpYeLzUY/giphy.gif)
 
 One thing to point out is that because this is a modal, we expect it to _overlay_ something (as opposed to being a standalone template). Real quick, let's look at how we're including this in the `documents` template.
 
@@ -449,7 +448,7 @@ Meteor.promise( "convertMarkdown", text )
 
 See what's happening here? Using the Promises syntax, we're "chaining" on a callback function to be called _after_ our `convertMarkdown` method has returned a value. That value, then, becomes accessible as part of the callback function. Here, we've denoted the value as the `html` argument in the callback. Pretty cool, right? To get our live preview, it's just a one liner: `$( "#preview" ).html( html );`. Neat! With this, we can now type in the editor in Markdown and get a _live preview_ rendered in HTML.
 
-![Whaaaat](http://media0.giphy.com/media/i9nkolRQgbN9C/giphy.gif)
+![Whaaaat](https://media0.giphy.com/media/i9nkolRQgbN9C/giphy.gif)
 
 We're not done  yet! Notice that return value? Here, we're calling to another method `updateDocument`, again, with a promise. Let's jump up to the server to see what we're working with.
 
@@ -607,7 +606,7 @@ Template.editor.onCreated( function() {
   this.saveState = new ReactiveVar();
 });
 ```
-Nice and simple! Here, we just attach our ReactiveVar to a variable [on our template's instance](http://themeteorchef.com/snippets/reactive-dict-reactive-vars-and-session-variables/#tmc-reactive-variables). Now, within any of our template logic, we can get access to the value of `saveState`. As the name suggests, too, it's reactive! This means that if it changes, anything dependent on it will change, too. Next up is a helper to toggle our two icons/states in the editor header.
+Nice and simple! Here, we just attach our ReactiveVar to a variable [on our template's instance](https://themeteorchef.com/snippets/reactive-dict-reactive-vars-and-session-variables/#tmc-reactive-variables). Now, within any of our template logic, we can get access to the value of `saveState`. As the name suggests, too, it's reactive! This means that if it changes, anything dependent on it will change, too. Next up is a helper to toggle our two icons/states in the editor header.
 
 <p class="block-header">/client/controllers/authenticated/editor.js</p>
 
@@ -621,7 +620,7 @@ Template.editor.helpers({
 });
 ```
 
-Boom! Because we've attached our `ReactiveVar` to our template instance, we can get access to it in our helper by calling `Template.instance().saveState.get()`. This is similar to a Session variable, but [keeps everything local to the template](http://themeteorchef.com/snippets/reactive-dict-reactive-vars-and-session-variables/#tmc-when-to-use-reactive-varsdict-vs-session-variables) and the _instance_ of that template. Win! Now...one last step. We need to _set_ our variable when something happens.
+Boom! Because we've attached our `ReactiveVar` to our template instance, we can get access to it in our helper by calling `Template.instance().saveState.get()`. This is similar to a Session variable, but [keeps everything local to the template](https://themeteorchef.com/snippets/reactive-dict-reactive-vars-and-session-variables/#tmc-when-to-use-reactive-varsdict-vs-session-variables) and the _instance_ of that template. Win! Now...one last step. We need to _set_ our variable when something happens.
 
 <p class="block-header">/client/controllers/authenticated/editor.js</p>
 
